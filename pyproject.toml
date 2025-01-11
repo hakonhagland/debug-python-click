@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "debug-python-click"
+version = "0.1.0"
+description = ""
+authors = ["Håkon Hægland <hakon.hagland@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+click = "^8.1.8"
+
+[tool.poetry.scripts]
+greet = "app:greet"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
