@@ -9,7 +9,7 @@ original_call = click.core.BaseCommand.__call__
 # Define your new __call__ method
 def new_call(self, *args, **kwargs):
     print("Custom __call__ invoked")
-    breakpoint()
+    #breakpoint()
     # Call the original behavior:
     return original_call(self, *args, **kwargs)
 

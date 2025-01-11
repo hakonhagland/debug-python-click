@@ -5,20 +5,32 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+        poetry-version: ["latest", "main", "1.8.4"]
     steps:
       - uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install poetry
-        uses: abatilo/actions-poetry@v2
+        uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
 
+      - name: Show current versions
+        run: |
+          poetry --version
+          python --version
+  
       - name: Install dependencies
-        run: poetry install
+        run: |
+          poetry install
 
       - name: Test greet --help
         run: |
@@ -30,19 +42,6 @@ jobs:
       - name: Test greet --help Direct Invocation
         run: |
           echo "Before direct invocation of greet script"
-          GREET_PATH=$(poetry run which greet)
-
-          HEAD_PATH=$(head -n 1 "$GREET_PATH")
-          # Extract interpreter path from shebang
-          PYTHON_PATH=$(echo "$HEAD_PATH" | cut -d'!' -f2)
-          echo "Using Python interpreter at $PYTHON_PATH"
-          "$PYTHON_PATH" -c 'print("Python interpreter is working")'
-
-          # Insert a debug print statement after the shebang (line 1)
-          sed -i '2i print("DEBUG: Script started", flush=True)' "$GREET_PATH"
-
-          echo "Using Python to run $GREET_PATH --help"
-          poetry run python "$GREET_PATH" --help
 
           # Now attempt to run the original command
           poetry run greet --help
